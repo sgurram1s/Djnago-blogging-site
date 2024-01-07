@@ -1,0 +1,30 @@
+{% extends "feed/postfeed.html" %}
+
+{% block title %}
+<title>Friends</title>
+{% endblock title %}
+
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h1>Your Friends({{number_of_friends}})</h1>
+        </div>
+    </div>
+<hr>
+
+
+{% for user in friends %}
+
+    <div class="card border-none">
+        <div class="card-body">
+            <h5 class="card-title">{{ user.username }}</h5>
+            <a href="" class="btn btn-primary">Visit Profile</a>
+            <a href="" class="btn btn-danger">Remove</a>
+        </div>
+    </div>
+
+{% endfor %}
+</div>
+{% endblock content %}
