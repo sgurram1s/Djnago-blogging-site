@@ -1,0 +1,35 @@
+
+
+{% extends "feed/postfeed.html" %}
+
+{% block title %}
+<title>New Post</title>
+{% endblock title %}
+
+
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8">
+                <h2>New Post</h2>
+            </div>
+            <form method="POST" class="post-form">
+                {% csrf_token %}
+                {% for field in form %}
+                <div class="form-group">
+                    {{ field.label_tag }}
+                    {{ field }}
+                    {% for error in field.errors %}
+                    <p style="color: red">{{ error }}</p>
+                    {% endfor %}
+                </div>
+                {% endfor %}
+                <button type="submit" class="btn btn-primary">Create Post</button>
+            </form>
+        </div>
+    </div>
+
+
+{% endblock content %}
+
+

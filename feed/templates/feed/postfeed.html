@@ -1,0 +1,62 @@
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" integrity="sha384-gfdkjb5BdAXd+lj+gudLWI+BXq4IuLW5IT+brZEZsLFm++aCMlF1V92rMkPaX4PP" crossorigin="anonymous">
+
+{% extends 'market/base_page.html' %}
+
+{% block title %}
+<title>home</title>
+{% endblock title %}
+
+{% block site_name %}
+{{user_id}}
+{% endblock site_name %}
+
+
+{% block user_register %}
+<li class="nav-item col-sm-2">
+    <a class="nav-link" href={% url 'users_register:logout_page'%}>Logout</a>
+</li>
+{% endblock user_register %}
+
+{% block content %}
+
+<div class="container-fluid">
+  <div class="col-sm-3">
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal" onclick=location.href='{% url "feed:createpost" request.user %}'>Create Post</button>
+  </div><br><br>
+  <div class="col-sm-9">
+    <h4><small>RECENT POSTS</small></h4>
+    <hr>
+    
+    <div class="container-fluid">
+      {% for data in feed_posts %}
+      <div class="row">
+        <div class="card">
+          <div class="container-fluid">
+            <div class="col-sm-2 text-center">
+              <img src="bandmember.jpg" class="img-circle" height="65" width="65" alt="Avatar">
+            </div>
+
+            <div class="col-sm-10">
+              <a href={% url "feed:viewpost" request.user data.id %}>
+                <h2>{{ data.title}}</h2>
+              </a>
+              <h5><span class="glyphicon glyphicon-time"></span> Post by {{ data.author}}, {{ data.created_date}}.</h5>
+              {% for location in data.locations.all %}
+              <h5><span class="label label-info">{{ location}}</span></h5>
+              {% endfor %}
+              <br><br>
+              <p>{{ data.body_snippet}}</p>
+              <br><br>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}  
