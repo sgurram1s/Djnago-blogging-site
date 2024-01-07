@@ -1,0 +1,25 @@
+{% extends 'market/base_page.html' %}
+
+{% block title %}
+<title>Market</title>
+{% endblock title %}
+
+{% block site_name %}
+Blogger's Place
+{% endblock %}
+
+{% block user_register %}
+<li class="nav-item dropdown">
+    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+        Create User
+    </a>
+    <ul class="dropdown-menu">
+        <li><a class="dropdown-item" href={% url 'users_register:login_page' %}>Login</a></li>
+        <li><a class="dropdown-item" href={% url 'users_register:register_page' %}>Register</a></li>
+        <li><hr class="dropdown-divider"></li>
+        <li><a class="dropdown-item" href="#">Continue as Guest</a></li>
+    </ul>
+    </li>
+
+{% endblock user_register %}
+
