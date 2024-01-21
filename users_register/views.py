@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from .models import UserData
+from .models import UserData, MyProfile
 
 
 
@@ -17,6 +17,9 @@ def register_page(request):
         form = RegisterForm(request.POST)
         if form.is_valid():
             form.save()
+            username = form.cleaned_data.get('username')
+            password = form.cleaned_data.get('password1')
+            user = authenticate(request, username = username, password = password)
             login(request, user)
             return redirect('users_register:personal_info_page', request.user)
         else:
@@ -26,12 +29,20 @@ def register_page(request):
     return render(request, 'users_register/register_page.html', {'form': form})
 
 
+@login_required(login_url='users_register:login_page')
 def personal_info_page(request, user):
     if request.method == 'POST':
         form = MyProfileForm(request.POST)
         if form.is_valid():
-            form.save()
-            return redirect('users_register:login_page')
+            user_data = MyProfile.objects.create(
+                first_name = form.cleaned_data.get('first_name'),
+                last_name = form.cleaned_data.get('last_name'),
+                user = request.user,
+                birthday = form.cleaned_data.get('birthday'),
+                phone = form.cleaned_data.get('phone'),
+                )
+            user_data.save()
+            return redirect('feed:index', user)
         else:
             return HttpResponse('details not valid')
     else:
@@ -64,7 +75,7 @@ def logout_page(request):
     return redirect("initial_page")
 
 
-#@login_required(login_url='users_register:login_page')
+@login_required(login_url='users_register:login_page')
 def friends_page(request, user):
     user = request.user.id
     friends = UserData.objects.get(user=user).friends.all().order_by('username')
@@ -73,3 +84,13 @@ def friends_page(request, user):
         'number_of_friends': len(friends)
         }
     return render(request, "users_register/friends_page.html", context)
+
+@login_required(login_url='users_register:login_page')
+def profile_page(request, user):
+    user = User.objects.get(username=user)
+    details = MyProfile.objects.get(user=user)
+    context = {
+        'user': user,
+        'details': details,
+        }
+    return render(request, "users_register/profile_page.html", context)
