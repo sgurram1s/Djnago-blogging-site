@@ -12,5 +12,6 @@ urlpatterns = [
     path('logout/', logout_page, name='logout_page'),
     #path('<str:user>/', index_page, name='index_page'),
     path('<str:user>/friends/', friends_page, name='friends_page'),
+    path('<str:user>/profile/', profile_page, name='profile_page'),
 ]
 
