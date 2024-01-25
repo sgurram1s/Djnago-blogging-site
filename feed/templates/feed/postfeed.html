@@ -11,7 +11,10 @@
 {% endblock title %}
 
 {% block site_name %}
-{{user_id}}
+<a class="navbar-brand" href="{% url 'users_register:profile_page' user=request.user data=request.user %}">
+  <img src="{{request.user.myprofile.profile_photo.url}}" default:"/static/images/default.jpg" class="img-circle" height="60" width="60" alt="Avatar">
+</a>
+  
 {% endblock site_name %}
 
 
@@ -30,32 +33,41 @@
   <div class="col-sm-9">
     <h4><small>RECENT POSTS</small></h4>
     <hr>
-    
-    <div class="container-fluid">
+    <vr class="col-sm-2"></vr>
+
+    <div class="row">
       {% for data in feed_posts %}
-      <div class="row">
         <div class="card">
           <div class="container-fluid">
             <div class="col-sm-2 text-center">
-              <img src="bandmember.jpg" class="img-circle" height="65" width="65" alt="Avatar">
+              <img src="{{data.author.myprofile.profile_photo.url}}" default:"/static/images/default.jpg" class="img-circle" height="65" width="65" alt="Avatar">
+              {% for profile in profile_data %}
+              {% if profile.user == data.author %}
+              <a href="{% url 'users_register:profile_page' user=request.user data=data.author %}">
+                <img src="{{profile.profile_photo.url}}" default:"/static/images/default.jpg" class="img-circle" height="65" width="65" alt="Avatar">
+              </a>
+              {% endif %}
+              {% endfor %}
             </div>
 
             <div class="col-sm-10">
               <a href={% url "feed:viewpost" request.user data.id %}>
                 <h2>{{ data.title}}</h2>
               </a>
-              <h5><span class="glyphicon glyphicon-time"></span> Post by {{ data.author}}, {{ data.created_date}}.</h5>
+              <h5><span class="glyphicon glyphicon-time"></span> Post by <a href="{% url 'users_register:profile_page' user=request.user data=data.author %}">{{ data.author}}</a>, {{ data.created_date}}.</h5>
               {% for location in data.locations.all %}
-              <h5><span class="label label-info">{{ location}}</span></h5>
+              <h5><span class="label label-info">{{location}}</span></h5>
               {% endfor %}
-              <br><br>
+              <br>
               <p>{{ data.body_snippet}}</p>
-              <br><br>
+              <br>
             </div>
           </div>
-          {% endfor %}
         </div>
-      </div>
+        <div class="col-sm-2">
+          <hr>
+        </div>
+      {% endfor %}
     </div>
   </div>
 </div>

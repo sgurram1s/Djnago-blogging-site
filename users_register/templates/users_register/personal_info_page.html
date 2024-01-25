@@ -86,6 +86,15 @@
 						</div>
                         {% endfor %}
 						<input type="hidden" name="userid" value="{{ request.user }}"></input>
+
+						{% if messages %}
+							<hr>
+							{% for message in messages %}
+								<p style="color:Blue">{{ message }}</p>
+							{% endfor %}
+							<hr>
+						{% endif %}
+
 				   		<div class="d-flex justify-content-center mt-3 login_container">
 				 			<input class="btn login_btn" type="submit" value="Register Account">
 				   		</div>

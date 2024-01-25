@@ -14,17 +14,37 @@
     </div>
 <hr>
 
-
-{% for user in friends %}
+{% if number_of_friends != 0 %}
+{% for users in friends %}
 
     <div class="card border-none">
         <div class="card-body">
-            <h5 class="card-title">{{ user.username }}</h5>
-            <a href="" class="btn btn-primary">Visit Profile</a>
-            <a href="" class="btn btn-danger">Remove</a>
+            {% for profile in profile_data %}
+            {% if profile.user == users %}
+              <img src="{{profile.profile_photo.url}}" default:"/static/images/default.jpg" class="img-circle" height="65" width="65" alt="Avatar">
+            {% endif %}
+            {% endfor %}
+            <h5 class="card-title">{{ users.username }}</h5>
+
+            <a href="{% url 'users_register:profile_page' user=request.user data=users %}" class="btn btn-primary">Visit Profile</a>
+            <form method="post">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger" name="unfriend" value="{{users.id}}">
+                    Unfriend
+                </button>
+            </form>
+
         </div>
     </div>
 
 {% endfor %}
 </div>
+{% else %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h1>You have no friends added</h1>
+        </div>
+    </div>
+{% endif %}
 {% endblock content %}

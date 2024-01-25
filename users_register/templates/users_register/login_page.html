@@ -99,6 +99,13 @@
 							</div>
 								<input type="password" name="password" placeholder="Password..." class="form-control" >
 						</div>
+						{% if messages %}
+							<hr>
+							{% for message in messages %}
+								<p style="color:red">{{ message }}</p>
+							{% endfor %}
+							<hr>
+						{% endif %}
 
 							<div class="d-flex justify-content-center mt-3 login_container">
 				 				<input class="btn login_btn" type="submit" value="Login">

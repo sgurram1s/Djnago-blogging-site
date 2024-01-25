@@ -1,11 +1,45 @@
-{{user.username}}<br>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" integrity="sha384-gfdkjb5BdAXd+lj+gudLWI+BXq4IuLW5IT+brZEZsLFm++aCMlF1V92rMkPaX4PP" crossorigin="anonymous">
 
-{{details.first_name}}<br>
+<div class="container">
+    <div class="well well-sm">
+        <div class="row">
+            <div class="card text-center">
+                <div class="col-md-12">
+                    <div class="col-md-6">
+                        <i class="fas fa-user"></i> {{details.first_name}}
+                    </div><br>
+                    <div class="col-md-6">
+                        <i class="fas fa-user"></i> {{details.last_name}}
+                    </div><br>
+                    <div class="col-md-6">
+                        <i class="fas fa-user-circle"></i> {{user.username}}
+                    </div><br>
+                    <div class="col-md-6">
+                        <i class="fas fa-envelope"></i> {{user.email}}
+                    </div><br>
+                    <div class="col-md-6">
+                        <i class="fas fa-birthday-cake"></i> {{details.birthday}}
+                    </div><br>
+                    <div class="col-md-6">
+                        <i class="fas fa-phone"></i> {{details.phone}}
+                    </div><br>
+                    <div class="col-md-4">
+                        <img src="{{details.profile_photo.url}}" class="img-circle" height="160" width="160" alt="Avatar">
+                    </div><hr>
+                    {% if follow == "Add Friend"%}
+                        <button>Add Friend</button>
+                    {% elif follow == "Remove Friend" %}
+                        <button>Remove Friend</button>
+                    {% elif follow == "Edit Profile" %}
+                        <button>Edit Profile</button>
+                    {% endif %}<hr>
+                </div>
+            </div>
+        </div>
+    </div>
 
-{{details.last_name}}<br>
-
-{{user.email}}<br>
-
-{{details.birthday}}<br>
-
-{{details.phone}}<br>
+</div>

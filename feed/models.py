@@ -12,6 +12,9 @@ class FeedPost(models.Model):
 
     def __str__(self):
         return self.title
+    
+    def postid(self):
+        return self.id
 
     def body_snippet(self):
         if len(self.post_content) > 150:
@@ -27,7 +30,7 @@ class PostLocation(models.Model):
 
 
 class PostLikeComment(models.Model):
-    post = models.ForeignKey(FeedPost, on_delete=models.CASCADE)
+    post = models.OneToOneField(FeedPost, on_delete=models.CASCADE)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     comment = models.TextField(default='')
     created_date = models.DateTimeField(default=timezone.now)

@@ -3,7 +3,7 @@
 
 
 <head class="header">
-  <nav class="navbar navbar-expand-lg bg-body-tertiary">
+  <nav class="navbar navbar-expand-lg bg-body-tertiary" style="background-color: #e3f2fd;" width="100%" height="40%">
     <div class="container-fluid">
       <a class="navbar-brand" href={% url "initial_page" %}>{% block site_name %}{% endblock %}</a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -78,7 +78,7 @@
     }
   </style>
 </head>
-<body>
+<body><hr>
 {% block content %}
 {% endblock %}
 

@@ -3,16 +3,18 @@ from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from .models import FeedPost, PostLikeComment
 from .forms import CreatePostForm
+from users_register.models import MyProfile
 
 
 @login_required(login_url='users_register:login_page')
 def index(request, **kwargs):
     user_name = kwargs['user']
     feed_posts = FeedPost.objects.all().order_by('-created_date')
-
+    profile_data = MyProfile.objects.all()
     context = {
         'feed_posts': feed_posts,
         'user_id': user_name,
+        'profile_data': profile_data,
     }
 
     return render(request, 'feed/postfeed.html', context)
@@ -41,14 +43,17 @@ def createpost(request, user):
 
 def viewpost(request, user, post_id):
     post = FeedPost.objects.get(id=post_id)
+    profile_data = MyProfile.objects.get(user=post.author)
     context = {
         'data': post,
         'user_id': user,
+        'profile_data': profile_data,
     }
     return render(request, 'feed/viewpost.html', context)
 
 def postcomment(request, post_id):
     post = PostLikeComment.objects.get(id=post_id)
+
     context = {
         'data': post,
         #'user': user,
