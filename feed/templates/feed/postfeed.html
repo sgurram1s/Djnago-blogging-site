@@ -40,7 +40,6 @@
         <div class="card">
           <div class="container-fluid">
             <div class="col-sm-2 text-center">
-              <img src="{{data.author.myprofile.profile_photo.url}}" default:"/static/images/default.jpg" class="img-circle" height="65" width="65" alt="Avatar">
               {% for profile in profile_data %}
               {% if profile.user == data.author %}
               <a href="{% url 'users_register:profile_page' user=request.user data=data.author %}">
