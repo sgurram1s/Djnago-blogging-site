@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse, request
 from .forms import RegisterForm, MyProfileForm
 from django.contrib.auth.models import User
@@ -7,16 +7,16 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from .models import UserData, MyProfile
 from django.contrib import messages
+from .decoders import unauthenticated_user, allowed_users
 
-
+@unauthenticated_user
 def register_page(request):
-    if request.user.is_authenticated:
-        user = request.user
-        return redirect('feed:index', user)
     if request.method == 'POST':
         form = RegisterForm(request.POST)
         email = request.POST.get('email')
         username = request.POST.get('username')
+        password1 = request.POST.get('password1')
+        password2 = request.POST.get('password2')
         if User.objects.filter(username=username).exists():
                 messages.error(request, f'User already exists! Please login')
         elif User.objects.filter(email=email).exists():
@@ -33,7 +33,11 @@ def register_page(request):
             messages.success(request, f'Please add your personal details')
             return redirect('users_register:personal_info_page', request.user)
         else:
-            messages.error(request, f'Invalid details! Please enter valid details')
+            if password1 != password2:
+                messages.error(request, f'Passwords do not match! Please try again')
+            else:
+                messages.error(request, f'Password must be at least 8 characters long')
+                messages.error(request, f'Password must contains Capital letters, Small letters, Numbers and Special characters')
         return render(request, 'users_register/register_page.html', {'form': form})
     else:
         form = RegisterForm()
@@ -42,28 +46,52 @@ def register_page(request):
 
 @login_required(login_url='users_register:login_page')
 def personal_info_page(request, user):
-    if request.method == 'POST':
-        form = MyProfileForm(request.POST)
+    if request.method == 'POST':        
+        form = MyProfileForm(request.POST,request.FILES)
         if form.is_valid():
-            user_data = MyProfile.objects.create(
+            user_object = MyProfile.objects.create(
+                first_name = form.cleaned_data.get('first_name'),
+                last_name = form.cleaned_data.get('last_name'),
+                user = request.user,
+                birthday = form.cleaned_data.get('birthday'),
+                phone = form.cleaned_data.get('phone'),
+                profile_photo = form.files.get('profile_photo'),
+                )
+            user_object.save()
+
+            return redirect('feed:index', user)
+        else:
+            messages.error(request, f'Please enter valid details')
+            return render(request, 'users_register/personal_info_page.html', {'form': form})
+    else:            
+        form = MyProfileForm(initial={'user': request.user})
+    return render(request, 'users_register/personal_info_page.html', {'form': form})
+
+#need to modify this function and add this to the personal_info_page function
+@login_required(login_url='users_register:login_page')
+def personal_info_update(request, user):
+    if request.method == 'POST':        
+        form = MyProfileForm(request.POST,request.FILES)
+        if form.is_valid():
+            MyProfile.objects.filter(user=request.user).update(
                 first_name = form.cleaned_data.get('first_name'),
                 last_name = form.cleaned_data.get('last_name'),
                 user = request.user,
                 birthday = form.cleaned_data.get('birthday'),
                 phone = form.cleaned_data.get('phone'),
                 )
-            user_data.save()
-            return redirect('feed:index', user)
+            data = request.user
+            return redirect('users_register:profile_page', user, data)
         else:
-            return HttpResponse('details not valid')
-    else:
-        form = MyProfileForm()
-    return render(request, 'users_register/personal_info_page.html', {'form': form})
+            messages.error(request, f'Please enter valid details')
+            return render(request, 'users_register/personal_info_update.html', {'form': form})
+    else:            
+        form = MyProfileForm(instance=request.user.myprofile)
+    return render(request, 'users_register/personal_info_update.html', {'form': form})
 
+
+@unauthenticated_user
 def login_page(request):   
-    if request.user.is_authenticated:
-        user = request.user
-        return redirect('feed:index', user)
     if request.method == 'POST':
         form = AuthenticationForm(data= request.POST)
         if form.is_valid():
@@ -71,7 +99,10 @@ def login_page(request):
             #user = authenticate(request, username = username, password = password)
             if user is not None:
                 login(request, user) 
-                return redirect('feed:index', user)
+                if 'next' in request.POST:
+                    return redirect(request.POST.get('next'))
+                else:
+                    return redirect('feed:index', user)
             else:
                 messages.info(request, f'Invalid username or password')
         else:
@@ -80,8 +111,7 @@ def login_page(request):
                 messages.error(request, f'Invalid password! Please try again')
             else:
                 messages.info(request, f'User does not exist! Please register')
-            form = AuthenticationForm()
-            return render(request, 'users_register/login_page.html', {'form': form})
+        return render(request, 'users_register/login_page.html', {'form': form})
     else:
         form = AuthenticationForm()
     return render(request, 'users_register/login_page.html', {'form': form})
@@ -115,6 +145,19 @@ def profile_page(request, user, **kwargs):
     users = User.objects.get(username=user_profile)
     details = MyProfile.objects.get(user=users)
     list_of_friends = UserData.objects.get(user=request.user).friends.all()
+    
+    if request.method == 'POST':
+        if request.POST.get("editprofile"):
+            return redirect('users_register:personal_info_update', request.user)
+        elif request.POST.get("addfriend"):
+            friend = request.POST.get("addfriend")
+            UserData.objects.get(user=request.user).friends.add(friend)
+        elif request.POST.get("removefriend"):
+            friend = request.POST.get("removefriend")
+            UserData.objects.get(user=request.user).friends.remove(friend)
+        return redirect('feed:index', user)
+            
+    
     if users.username != user and (users not in list_of_friends):
         follow = "Add Friend"
     elif users.username != user:
@@ -127,3 +170,4 @@ def profile_page(request, user, **kwargs):
         'follow': follow,
         }
     return render(request, "users_register/profile_page.html", context)
+

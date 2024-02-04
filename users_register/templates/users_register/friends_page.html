@@ -21,7 +21,7 @@
         <div class="card-body">
             {% for profile in profile_data %}
             {% if profile.user == users %}
-              <img src="{{profile.profile_photo.url}}" default:"/static/images/default.jpg" class="img-circle" height="65" width="65" alt="Avatar">
+              <img src="{{profile.profile_photo.url}}" class="img-circle" height="65" width="65" alt="Avatar">
             {% endif %}
             {% endfor %}
             <h5 class="card-title">{{ users.username }}</h5>

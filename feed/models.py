@@ -8,7 +8,7 @@ class FeedPost(models.Model):
     title = models.CharField(max_length=200) # CharField is for limited text
     post_content = models.TextField() # TextField is for unlimited text
     created_date = models.DateTimeField(default=timezone.now)
-    locations = models.ManyToManyField('PostLocation')
+    locations = models.ManyToManyField('PostLocation',blank=True)
 
     def __str__(self):
         return self.title
@@ -29,11 +29,12 @@ class PostLocation(models.Model):
         return self.post_location
 
 
-class PostLikeComment(models.Model):
-    post = models.OneToOneField(FeedPost, on_delete=models.CASCADE)
-    author = models.ForeignKey(User, on_delete=models.CASCADE)
-    comment = models.TextField(default='')
-    created_date = models.DateTimeField(default=timezone.now)
+class PostLikeData(models.Model):
+    post = models.OneToOneField(FeedPost, on_delete=models.CASCADE, primary_key=True)
+    likes = models.ManyToManyField(User, related_name='likes', blank=True)
 
     def __str__(self):
-        return self.comment
+        return self.post.title
+    
+    def like_count(self):
+        return self.likes.count()

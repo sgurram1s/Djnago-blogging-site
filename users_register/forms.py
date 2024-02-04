@@ -18,10 +18,10 @@ class RegisterForm(UserCreationForm):
 class MyProfileForm(forms.ModelForm):
     class Meta:
         model = MyProfile
-        fields = ['first_name', 'last_name', 'birthday', 'phone']
+        fields = ['first_name', 'last_name', 'birthday', 'phone', 'profile_photo']
         widgets = {
             'first_name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter First Name'}),
             'last_name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter Last Name'}),
-            'birthday': forms.DateInput(attrs={'class': 'form-control', 'placeholder': 'Enter Birthday'}),
+            'birthday': forms.DateInput(attrs={'class': 'form-control', 'placeholder': 'Enter Birthday(YYYY-MM-DD)'}, format='%Y-%m-%d'),
             'phone': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter Phone'}),
             }

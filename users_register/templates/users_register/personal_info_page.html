@@ -75,17 +75,20 @@
 				</div>
 				<div class="d-flex justify-content-center form_container">
 
-					<form method="POST" action="">
+					<form method="POST" enctype="multipart/form-data">
 						{% csrf_token %}
                         {% for field in form %}
 						<div class="input-group mb-2">
 							<div class="input-group-append">
 								<span class="input-group-text"><i class="fas fa-envelope-square"></i></span>
 							</div>
-                            {{field.label_tag}}{{field}}
+							{% if attrs in field %}
+                            	{{field.label_tag}}{{field}}
+							{% else %}
+								{{field}}
+							{% endif %}
 						</div>
                         {% endfor %}
-						<input type="hidden" name="userid" value="{{ request.user }}"></input>
 
 						{% if messages %}
 							<hr>
@@ -96,7 +99,7 @@
 						{% endif %}
 
 				   		<div class="d-flex justify-content-center mt-3 login_container">
-				 			<input class="btn login_btn" type="submit" value="Register Account">
+				 			<input class="btn login_btn" type="submit" value="Add Details"></input>
 				   		</div>
 					</form>
 				</div>

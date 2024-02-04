@@ -28,14 +28,31 @@
                         <i class="fas fa-phone"></i> {{details.phone}}
                     </div><br>
                     <div class="col-md-4">
-                        <img src="{{details.profile_photo.url}}" class="img-circle" height="160" width="160" alt="Avatar">
+                        <img src="{{details.profile_photo.url}}" class="img-circle" height="160" width="160" alt="Profile Photo">
                     </div><hr>
                     {% if follow == "Add Friend"%}
-                        <button>Add Friend</button>
+                        <form method="post">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-success" name="addfriend" value="{{user.id}}">
+                                Add Friend
+                            </button>
+                        </form>
                     {% elif follow == "Remove Friend" %}
-                        <button>Remove Friend</button>
+                        <form method="post">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger" name="removefriend" value="{{user.id}}">
+                                Remove Friend
+                            </button>
+                        </form>
                     {% elif follow == "Edit Profile" %}
-                        <button>Edit Profile</button>
+
+                        <form method="post">
+                            {% csrf_token %}
+
+                            <button type="submit" class="btn btn-warning" name="editprofile" value="{{user.username}}">
+                                Edit profile
+                            </button>
+                        </form>
                     {% endif %}<hr>
                 </div>
             </div>
